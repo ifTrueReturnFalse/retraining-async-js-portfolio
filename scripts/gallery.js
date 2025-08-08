@@ -4,24 +4,36 @@
 
 const url = "http://localhost:5678/api";
 
-export function initializeGallery() {
-    fetchGalleryWorks();
+/**
+ * Function to initialize the gallery for dynamic display
+ * Do nothing if it can't reach the API
+ */
+export async function initializeGallery() {
+  let works = await fetchGalleryWorks();
+  if (works.length > 0) {
+    clearGallery();
+    addWorksToGallery(works);
+  }
 }
 
 /**
  * Fetch works from the API
- * Do nothing if no work found
+ * Send empty array in case of failure
+ * @returns {Array<Object>} List of works
  */
 async function fetchGalleryWorks() {
   try {
-    const works = await fetch(`${url}/works`).then((works) => works.json());
+    const response = await fetch(`${url}/works`);
 
-    if (works !== null) {
-      clearGallery();
-      addWorksToGallery(works);
+    if (!response.ok) {
+      throw new Error(`HTTP error, status : ${response.status}`);
     }
+
+    const works = await response.json();
+    return works || [];
   } catch (error) {
     console.error("Something went wrong : ", error);
+    return [];
   }
 }
 
@@ -40,16 +52,16 @@ function clearGallery() {
 function addWorksToGallery(works) {
   const gallery = document.querySelector(".gallery");
   for (let work of works) {
-    let figure = document.createElement("figure")
-    let image = document.createElement("img")
-    let figcaption = document.createElement("figcaption")
-    
-    image.src = work.imageUrl
-    image.alt = work.title
-    figcaption.innerText = work.title
+    let figure = document.createElement("figure");
+    let image = document.createElement("img");
+    let figcaption = document.createElement("figcaption");
 
-    figure.appendChild(image)
-    figure.appendChild(figcaption)
-    gallery.appendChild(figure)
+    image.src = work.imageUrl;
+    image.alt = work.title;
+    figcaption.innerText = work.title;
+
+    figure.appendChild(image);
+    figure.appendChild(figcaption);
+    gallery.appendChild(figure);
   }
 }
