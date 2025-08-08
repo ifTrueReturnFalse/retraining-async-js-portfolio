@@ -108,6 +108,10 @@ async function fetchCategories() {
   }
 }
 
+/**
+ * Fallback function to try to build the category array if existing data is present
+ * @returns {Array<Object>} array of categories
+ */
 function fallbackFetchCategories() {
   try {
     //In case categories were already stored
