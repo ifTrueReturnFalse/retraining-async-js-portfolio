@@ -2,7 +2,9 @@
  * Gallery scripts
  */
 
-const url = "http://localhost:5678/api";
+import {CONFIG} from "./config.js"
+
+const url = CONFIG.API_URL;
 
 /**
  * Function to initialize the gallery for dynamic display
@@ -41,7 +43,7 @@ async function fetchGalleryWorks() {
  * Clear the gallery content
  */
 function clearGallery() {
-  const gallery = document.querySelector(".gallery");
+  const gallery = document.querySelector(CONFIG.SELECTORS.GALLERY);
   gallery.innerHTML = "";
 }
 
@@ -50,7 +52,7 @@ function clearGallery() {
  * @param {Array<Object>} works
  */
 function addWorksToGallery(works) {
-  const gallery = document.querySelector(".gallery");
+  const gallery = document.querySelector(CONFIG.SELECTORS.GALLERY);
   for (let work of works) {
     let figure = document.createElement("figure");
     let image = document.createElement("img");
