@@ -20,6 +20,7 @@ export async function initializeGallery() {
 
   let categories = await fetchCategories();
   if (categories.length > 0) {
+    addFiltersToGallery(categories);
     insertInLocalStorage("categories", categories);
   }
 }
@@ -139,4 +140,40 @@ function fallbackFetchCategories() {
     console.error(`Something went wrong : ${error}`);
     return [];
   }
+}
+
+/**
+ * Function to add the filters buttons to the webpage
+ * based on the given categories
+ * @param {Array<Object>} categories 
+ */
+function addFiltersToGallery(categories) {
+  const categoriesSet = categoriesToSet(categories);
+  const filtersContainer = document.querySelector(CONFIG.SELECTORS.FILTERS);
+  let i = 0;
+  for (let category of categoriesSet) {
+    const parsedCategory = JSON.parse(category);
+
+    const button = document.createElement("button");
+
+    button.innerText = parsedCategory.name;
+    button.dataset.id = parsedCategory.id;
+    if (i === 0) button.classList.add("active-filter");
+    button.classList.add("filter-button")
+    filtersContainer.appendChild(button);
+    i++;
+  }
+}
+
+/**
+ * Create a Set to avoid duplicate on categories
+ * Add an extra entry to have the possibility to filter on all works
+ * @param {Array<Object>} categories : List of categories
+ * @returns {Set} Set with an extra "Tous" filter category and of every other categories
+ */
+function categoriesToSet(categories) {
+  let categorySet = new Set();
+  categorySet.add(JSON.stringify({ id: -1, name: "Tous" }));
+  categories.forEach((category) => categorySet.add(JSON.stringify(category)));
+  return categorySet;
 }
