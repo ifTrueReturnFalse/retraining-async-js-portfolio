@@ -2,7 +2,7 @@
  * Gallery scripts
  */
 
-import {CONFIG} from "./config.js"
+import { CONFIG } from "./config.js";
 
 const url = CONFIG.API_URL;
 
@@ -15,6 +15,12 @@ export async function initializeGallery() {
   if (works.length > 0) {
     clearGallery();
     addWorksToGallery(works);
+    insertInLocalStorage("works", works);
+  }
+
+  let categories = await fetchCategories();
+  if (categories.length > 0) {
+    insertInLocalStorage("categories", categories);
   }
 }
 
@@ -65,5 +71,68 @@ function addWorksToGallery(works) {
     figure.appendChild(image);
     figure.appendChild(figcaption);
     gallery.appendChild(figure);
+  }
+}
+
+/**
+ * Function to set item in localStorage
+ * Reset the value if it was previously stored
+ * @param {String} entryName
+ * @param {*} entryData
+ */
+function insertInLocalStorage(entryName, entryData) {
+  if (localStorage.getItem(entryName) != undefined) {
+    localStorage.removeItem(entryName);
+  }
+
+  localStorage.setItem(entryName, JSON.stringify(entryData));
+}
+
+/**
+ * Function to fetch all works categories
+ * @returns {Set} Set of categories
+ */
+async function fetchCategories() {
+  try {
+    const response = await fetch(`${url}/categories`);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error, status : ${response.status}`);
+    }
+
+    const categories = await response.json();
+
+    return categories || [];
+  } catch (error) {
+    return fallbackFetchCategories();
+  }
+}
+
+function fallbackFetchCategories() {
+  try {
+    //In case categories were already stored
+    if (localStorage.getItem("categories") != undefined) {
+      return JSON.parse(localStorage.getItem("categories"));
+    }
+
+    //Build categories based on the works stored
+    if (localStorage.getItem("works") != undefined) {
+      const works = JSON.parse(localStorage.getItem("works"));
+      let categories = [];
+      works.forEach((work) => {
+        //If there is not already an existing category with an existing id
+        //Then push it to categories
+        if (!categories.some((category) => category.id === work.category.id)) {
+          categories.push(work.category);
+        }
+      });
+
+      return categories;
+    } else {
+      throw new Error("Can't build categories from existing data.");
+    }
+  } catch (error) {
+    console.error(`Something went wrong : ${error}`);
+    return [];
   }
 }
