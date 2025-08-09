@@ -26,6 +26,8 @@ export async function initializeGallery() {
   }
 }
 
+//--------------STEP 1.1--------------
+
 /**
  * Fetch works from the API
  * Send empty array in case of failure
@@ -90,6 +92,8 @@ function insertInLocalStorage(entryName, entryData) {
   localStorage.setItem(entryName, JSON.stringify(entryData));
 }
 
+//--------------STEP 1.2--------------
+
 /**
  * Function to fetch all works categories
  * @returns {Set} Set of categories
@@ -106,6 +110,8 @@ async function fetchCategories() {
 
     return categories || [];
   } catch (error) {
+    //If it's not possible to reach the API or an error occured during process
+    //Try to get categories with a fallback function
     return fallbackFetchCategories();
   }
 }
@@ -151,8 +157,10 @@ function fallbackFetchCategories() {
 function addFiltersToGallery(categories) {
   const categoriesSet = categoriesToSet(categories);
   const filtersContainer = document.querySelector(CONFIG.SELECTORS.FILTERS);
+
   let i = 0;
   for (let category of categoriesSet) {
+    //Parse the category to make it usable for JS
     const parsedCategory = JSON.parse(category);
 
     const button = document.createElement("button");
@@ -161,6 +169,7 @@ function addFiltersToGallery(categories) {
     button.dataset.id = parsedCategory.id;
     if (i === 0) button.classList.add("active-filter");
     button.classList.add("filter-button");
+
     filtersContainer.appendChild(button);
     i++;
   }
@@ -174,7 +183,9 @@ function addFiltersToGallery(categories) {
  */
 function categoriesToSet(categories) {
   let categorySet = new Set();
+  //Add the "Tous" category
   categorySet.add(JSON.stringify({ id: -1, name: "Tous" }));
+  //Stringified to make it unique compared to an object and avoid duplicate
   categories.forEach((category) => categorySet.add(JSON.stringify(category)));
   return categorySet;
 }
@@ -186,22 +197,27 @@ function addFilterButtonsListener() {
   const filterButtons = document.querySelectorAll(
     `${CONFIG.SELECTORS.FILTERS} button`
   );
+
   filterButtons.forEach((button) => {
     button.addEventListener("click", (event) => {
-      const filterId = event.target.dataset.id;
-      handleFilter(filterId);
+      handleFilter(event.target.dataset.id);
     });
   });
 }
 
+/**
+ * Function to call the necesary functions to filters works
+ * @param {String} filterId : number in string format contained in the button dataset
+ */
 function handleFilter(filterId) {
   updateFilterButtons(filterId);
-  applyFilter(filterId);
+  const filteredWorks = getFilteredWorks(filterId);
+  console.log(filteredWorks)
 }
 
 /**
  * Function to update the class of the active filter
- * @param {Number} filterId : Id included in the dataset of the button
+ * @param {String} filterId : Id included in the dataset of the button in string format
  */
 function updateFilterButtons(filterId) {
   const filterButtons = document.querySelectorAll(
@@ -209,20 +225,28 @@ function updateFilterButtons(filterId) {
   );
 
   filterButtons.forEach((button) => {
+    //Remove the active class if it's not the concerned button
     if (
       button.classList.contains("active-filter") &&
       button.dataset.id != filterId
-    )
+    ) {
       button.classList.remove("active-filter");
+    }
+    //Add the active if the id matches
     if (
       !button.classList.contains("active-filter") &&
       button.dataset.id === filterId
-    )
+    ) {
       button.classList.add("active-filter");
+    }
   });
 }
 
-function applyFilter(filterId) {
+/**
+ * Return the array of filtered works based on the filter ID
+ * @param {String} filterId : Id included in the dataset of the button in string format
+ */
+function getFilteredWorks(filterId) {
   const works = JSON.parse(localStorage.getItem("works"));
   let filteredWorks = [];
   if (parseInt(filterId) === -1) {
@@ -233,5 +257,5 @@ function applyFilter(filterId) {
     );
   }
 
-  console.log(filteredWorks);
+  return filteredWorks;
 }
