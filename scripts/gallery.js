@@ -212,7 +212,8 @@ function addFilterButtonsListener() {
 function handleFilter(filterId) {
   updateFilterButtons(filterId);
   const filteredWorks = getFilteredWorks(filterId);
-  console.log(filteredWorks)
+  clearGallery()
+  addWorksToGallery(filteredWorks)
 }
 
 /**
@@ -245,6 +246,7 @@ function updateFilterButtons(filterId) {
 /**
  * Return the array of filtered works based on the filter ID
  * @param {String} filterId : Id included in the dataset of the button in string format
+ * @returns {Array<Object>} List of filtered works based on provided ID
  */
 function getFilteredWorks(filterId) {
   const works = JSON.parse(localStorage.getItem("works"));
