@@ -21,6 +21,7 @@ export async function initializeGallery() {
   let categories = await fetchCategories();
   if (categories.length > 0) {
     addFiltersToGallery(categories);
+    addFilterButtonsListener();
     insertInLocalStorage("categories", categories);
   }
 }
@@ -145,7 +146,7 @@ function fallbackFetchCategories() {
 /**
  * Function to add the filters buttons to the webpage
  * based on the given categories
- * @param {Array<Object>} categories 
+ * @param {Array<Object>} categories
  */
 function addFiltersToGallery(categories) {
   const categoriesSet = categoriesToSet(categories);
@@ -159,7 +160,7 @@ function addFiltersToGallery(categories) {
     button.innerText = parsedCategory.name;
     button.dataset.id = parsedCategory.id;
     if (i === 0) button.classList.add("active-filter");
-    button.classList.add("filter-button")
+    button.classList.add("filter-button");
     filtersContainer.appendChild(button);
     i++;
   }
@@ -176,4 +177,61 @@ function categoriesToSet(categories) {
   categorySet.add(JSON.stringify({ id: -1, name: "Tous" }));
   categories.forEach((category) => categorySet.add(JSON.stringify(category)));
   return categorySet;
+}
+
+/**
+ * Function to add an event listener to each filter button
+ */
+function addFilterButtonsListener() {
+  const filterButtons = document.querySelectorAll(
+    `${CONFIG.SELECTORS.FILTERS} button`
+  );
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const filterId = event.target.dataset.id;
+      handleFilter(filterId);
+    });
+  });
+}
+
+function handleFilter(filterId) {
+  updateFilterButtons(filterId);
+  applyFilter(filterId);
+}
+
+/**
+ * Function to update the class of the active filter
+ * @param {Number} filterId : Id included in the dataset of the button
+ */
+function updateFilterButtons(filterId) {
+  const filterButtons = document.querySelectorAll(
+    `${CONFIG.SELECTORS.FILTERS} button`
+  );
+
+  filterButtons.forEach((button) => {
+    if (
+      button.classList.contains("active-filter") &&
+      button.dataset.id != filterId
+    )
+      button.classList.remove("active-filter");
+    if (
+      !button.classList.contains("active-filter") &&
+      button.dataset.id === filterId
+    )
+      button.classList.add("active-filter");
+  });
+}
+
+function applyFilter(filterId) {
+  const works = JSON.parse(localStorage.getItem("works"));
+  let filteredWorks = [];
+  if (parseInt(filterId) === -1) {
+    filteredWorks = works;
+  } else {
+    filteredWorks = works.filter(
+      (work) => work.categoryId === parseInt(filterId)
+    );
+  }
+
+  console.log(filteredWorks);
 }
