@@ -3,10 +3,7 @@ import { CONFIG } from "./config.js";
 class Auth {
   static async login(email, password) {
     try {
-      const requestBody = {
-        email: email,
-        password: password,
-      };
+      const requestBody = { email, password };
 
       const response = await fetch(`${CONFIG.API_URL}/users/login`, {
         body: JSON.stringify(requestBody),
@@ -14,7 +11,7 @@ class Auth {
         headers: { "Content-Type": "application/json" },
       });
 
-      if (response.status != 200) {
+      if (!response.ok) {
         throw new Error(
           "Erreur lors de la connexion. Vérifiez vos identifiants."
         );
