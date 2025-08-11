@@ -29,7 +29,7 @@ Le site dialogue avec une API qui a été fournie dans le cadre de la formation.
 
 1. **Cloner le dépôt** :
 ```bash
-git clone https://github.com/ifTrueReturnFalse/sophie-bluel-interior-designer.git
+git clone https://github.com/ifTrueReturnFalse/retraining-async-js-portfolio.git
 ```
 
 2. **Le backend peut être trouver ici** :
@@ -66,7 +66,7 @@ The website communicates with an API that was provided as part of the training p
 
 1. **Clone the repository** :
 ```bash
-git clone https://github.com/ifTrueReturnFalse/sophie-bluel-interior-designer.git
+git clone https://github.com/ifTrueReturnFalse/retraining-async-js-portfolio.git
 ```
 
 2. **The backend can be found here** :
