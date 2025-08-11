@@ -27,8 +27,7 @@ function verifyInputs(email, password) {
   const regExpression = new RegExp(
     "^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?.([a-zA-Z]{2,})$"
   );
-  if (regExpression.test(email) && password.length > 2) return true;
-  else return false;
+  return regExpression.test(email) && password.length > 2
 }
 
 function displayError(errorMessage) {
