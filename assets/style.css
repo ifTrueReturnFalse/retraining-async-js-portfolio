@@ -203,6 +203,10 @@ a:hover {
   color: #b1663c;
 }
 
+.bold {
+  font-weight: 700;
+}
+
 #introduction {
   display: flex;
   align-items: center;
