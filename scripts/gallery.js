@@ -12,7 +12,11 @@ const url = CONFIG.API_URL;
  * Do nothing if it can't reach the API
  */
 export async function initializeGallery() {
-  const isConnected = Auth.isConnected;
+  const isConnected = Auth.isConnected();
+  
+  if (isConnected) {
+    changeLoginLink()
+  }
 
   let works = await fetchGalleryWorks();
   if (works.length > 0) {
@@ -265,4 +269,16 @@ function getFilteredWorks(filterId) {
   }
 
   return filteredWorks;
+}
+
+//--------------STEP 2.2--------------
+function changeLoginLink() {
+  const loginLink = document.querySelector(CONFIG.SELECTORS.LOGIN_LOGOUT_LINK)
+
+  loginLink.innerText = "logout"
+  loginLink.addEventListener("click", (event) => {
+    event.preventDefault()
+    Auth.disconnect()
+    window.location.href = "index.html"
+  })
 }
