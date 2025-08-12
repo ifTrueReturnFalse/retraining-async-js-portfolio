@@ -10,6 +10,7 @@ export const CONFIG = {
     LOGIN: ".login",
     EMAIL: ".login #email",
     PASSWORD: ".login #password",
-    ERROR: ".login .error"
+    ERROR: ".login .error",
+    LOGIN_LOGOUT_LINK: ".login-logout-link",
   },
 };

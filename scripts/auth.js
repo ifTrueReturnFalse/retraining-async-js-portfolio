@@ -1,5 +1,7 @@
 import { CONFIG } from "./config.js";
 
+//--------------STEP 2.2--------------
+
 class Auth {
   static async login(email, password) {
     try {

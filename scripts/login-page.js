@@ -1,6 +1,8 @@
 import { CONFIG } from "./config.js";
 import { Auth } from "./auth.js";
 
+//--------------STEP 2.2--------------
+
 function initializeLoginPage() {
   if (Auth.isConnected()) {
     window.location.href = "index.html"
