@@ -141,6 +141,24 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.edit-mode-div {
+  height: 60px;
+  width: 100vw;
+  background-color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  color: white;
+  position: relative;
+  left: calc(-50vw + 50%);
+}
+
+.hidden {
+  display: none;
 }
 
 header {
