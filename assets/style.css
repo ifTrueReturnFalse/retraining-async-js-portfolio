@@ -131,6 +131,7 @@ table {
 /** end reset css**/
 :root {
   --dark-green-color: #1d6154;
+  --darker-green-color: #0e2f28;
 }
 
 body {
@@ -351,6 +352,10 @@ input[type="submit"] {
   text-align: center;
   border-radius: 60px;
   cursor: pointer;
+}
+
+input[type="submit"]:hover {
+  background-color: var(--darker-green-color);
 }
 
 footer {
