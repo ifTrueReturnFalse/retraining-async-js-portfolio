@@ -3,6 +3,7 @@
  */
 
 import { CONFIG } from "./config.js";
+import { Auth } from "./auth.js";
 
 const url = CONFIG.API_URL;
 
@@ -11,6 +12,8 @@ const url = CONFIG.API_URL;
  * Do nothing if it can't reach the API
  */
 export async function initializeGallery() {
+  const isConnected = Auth.isConnected;
+
   let works = await fetchGalleryWorks();
   if (works.length > 0) {
     clearGallery();
@@ -18,11 +21,13 @@ export async function initializeGallery() {
     insertInLocalStorage("works", works);
   }
 
-  let categories = await fetchCategories();
-  if (categories.length > 0) {
-    addFiltersToGallery(categories);
-    addFilterButtonsListener();
-    insertInLocalStorage("categories", categories);
+  if (!isConnected) {
+    let categories = await fetchCategories();
+    if (categories.length > 0) {
+      addFiltersToGallery(categories);
+      addFilterButtonsListener();
+      insertInLocalStorage("categories", categories);
+    }
   }
 }
 
@@ -212,8 +217,8 @@ function addFilterButtonsListener() {
 function handleFilter(filterId) {
   updateFilterButtons(filterId);
   const filteredWorks = getFilteredWorks(filterId);
-  clearGallery()
-  addWorksToGallery(filteredWorks)
+  clearGallery();
+  addWorksToGallery(filteredWorks);
 }
 
 /**
