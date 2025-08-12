@@ -15,7 +15,7 @@ export async function initializeGallery() {
   const isConnected = Auth.isConnected();
   
   if (isConnected) {
-    changeLoginLink()
+    setupAdminMode()
   }
 
   let works = await fetchGalleryWorks();
@@ -272,6 +272,12 @@ function getFilteredWorks(filterId) {
 }
 
 //--------------STEP 2.2--------------
+
+function setupAdminMode() {
+  changeLoginLink()
+  displayEditMode()
+}
+
 function changeLoginLink() {
   const loginLink = document.querySelector(CONFIG.SELECTORS.LOGIN_LOGOUT_LINK)
 
@@ -281,4 +287,12 @@ function changeLoginLink() {
     Auth.disconnect()
     window.location.href = "index.html"
   })
+}
+
+function displayEditMode() {
+  const editModeDiv = document.querySelector(CONFIG.SELECTORS.EDIT_MODE_DIV)
+  const modifyDiv = document.querySelector(CONFIG.SELECTORS.MODIFY_DIV)
+
+  editModeDiv.classList.remove("hidden")
+  modifyDiv.classList.remove("hidden")
 }

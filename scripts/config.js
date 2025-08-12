@@ -12,5 +12,7 @@ export const CONFIG = {
     PASSWORD: ".login #password",
     ERROR: ".login .error",
     LOGIN_LOGOUT_LINK: ".login-logout-link",
+    EDIT_MODE_DIV: ".edit-mode-div",
+    MODIFY_DIV: ".modify-div",
   },
 };
