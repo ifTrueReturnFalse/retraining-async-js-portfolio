@@ -13,9 +13,9 @@ const url = CONFIG.API_URL;
  */
 export async function initializeGallery() {
   const isConnected = Auth.isConnected();
-  
+
   if (isConnected) {
-    setupAdminMode()
+    setupAdminMode();
   }
 
   let works = await fetchGalleryWorks();
@@ -274,25 +274,25 @@ function getFilteredWorks(filterId) {
 //--------------STEP 2.2--------------
 
 function setupAdminMode() {
-  changeLoginLink()
-  displayEditMode()
+  changeLoginLink();
+  displayEditMode();
 }
 
 function changeLoginLink() {
-  const loginLink = document.querySelector(CONFIG.SELECTORS.LOGIN_LOGOUT_LINK)
+  const loginLink = document.querySelector(CONFIG.SELECTORS.LOGIN_LOGOUT_LINK);
 
-  loginLink.innerText = "logout"
+  loginLink.innerText = "logout";
   loginLink.addEventListener("click", (event) => {
-    event.preventDefault()
-    Auth.disconnect()
-    window.location.href = "index.html"
-  })
+    event.preventDefault();
+    Auth.disconnect();
+    window.location.href = "index.html";
+  });
 }
 
 function displayEditMode() {
-  const editModeDiv = document.querySelector(CONFIG.SELECTORS.EDIT_MODE_DIV)
-  const modifyDiv = document.querySelector(CONFIG.SELECTORS.MODIFY_DIV)
+  const editModeDiv = document.querySelector(CONFIG.SELECTORS.EDIT_MODE_DIV);
+  const modifyDiv = document.querySelector(CONFIG.SELECTORS.MODIFY_DIV);
 
-  editModeDiv.classList.remove("hidden")
-  modifyDiv.classList.remove("hidden")
+  editModeDiv.classList.remove("hidden");
+  modifyDiv.classList.remove("hidden");
 }
