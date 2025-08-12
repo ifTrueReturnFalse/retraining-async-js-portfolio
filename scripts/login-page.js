@@ -2,6 +2,9 @@ import { CONFIG } from "./config.js";
 import { Auth } from "./auth.js";
 
 function initializeLoginPage() {
+  if (Auth.isConnected()) {
+    window.location.href = "index.html"
+  }
   addSubmitEventListener();
 }
 
