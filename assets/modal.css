@@ -1,0 +1,23 @@
+#modal {
+  border-radius: 10px;
+  border: 0;
+  background-color: white;
+  outline: none;
+}
+
+#modal::backdrop {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+  width: 630px;
+  height: 690px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
