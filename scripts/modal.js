@@ -9,7 +9,6 @@ class Modal {
       closeSelector: "#modal .modal-close",
       preloadTemplates: [],
       defaultTemplate: null,
-      backdropClose: true,
       apiUrl: CONFIG.API_URL,
     };
 
@@ -28,37 +27,53 @@ class Modal {
   }
 
   async preloadTemplates() {
-    this.config.preloadTemplates.forEach((templatePath) => {
-      console.log(templatePath);
+    const promises = this.config.preloadTemplates.map(async (templatePath) => {
+      try {
+        const response = await fetch(`../templates/${templatePath}.html`);
+        const htmlModal = await response.text();
+        this.templates.set(templatePath, htmlModal);
+      } catch (error) {
+        console.warn(
+          `Erreur lors de la récupération du template ${templatePath}`,
+          error
+        );
+      }
     });
+    await Promise.all(promises);
   }
 
   open() {
     this.isOpen = true;
-    this.modalElement.addEventListener("click", this.handleClick);
 
-    if (this.config.defaultTemplate !== null) {
-      this.setContent(this.templates[this.config.defaultTemplate]);
+    if (
+      this.config.defaultTemplate !== null &&
+      this.templates.has(this.config.defaultTemplate)
+    ) {
+      this.setContent(this.config.defaultTemplate);
     }
 
-    this.modalElement.showModal()
+    this.modalElement.showModal();
+    this.modalElement.addEventListener("click", this.handleClick);
   }
 
   close() {
     this.isOpen = false;
     this.modalElement.removeEventListener("click", this.handleClick);
-    
-    this.modalElement.close()
+
+    this.modalElement.close();
   }
 
   setContent(templatePath) {
-    console.log(templatePath);
+    this.contentElement.innerHTML = this.templates.get(templatePath);
   }
 
   handleClick(event) {
-    event.preventDefault()
-    if (event.target === this.modalElement) {
-      this.close()
+    event.preventDefault();
+    if (
+      event.target === this.modalElement ||
+      event.target === this.closeElement
+    ) {
+      this.close();
     }
     console.log(event);
   }

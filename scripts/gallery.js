@@ -6,8 +6,11 @@ import { CONFIG } from "./config.js";
 import { Auth } from "./auth.js";
 import { Modal } from "./modal.js";
 
-//const modalSettings = {}
-const modal = new Modal();
+const modalSettings = {
+  preloadTemplates: ["modalGallery"],
+  defaultTemplate: "modalGallery",
+}
+const modal = new Modal(modalSettings);
 
 /**
  * Function to initialize the gallery for dynamic display
