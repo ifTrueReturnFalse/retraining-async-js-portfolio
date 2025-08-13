@@ -4,8 +4,10 @@
 
 import { CONFIG } from "./config.js";
 import { Auth } from "./auth.js";
+import { Modal } from "./modal.js";
 
-const url = CONFIG.API_URL;
+//const modalSettings = {}
+const modal = new Modal();
 
 /**
  * Function to initialize the gallery for dynamic display
@@ -44,7 +46,7 @@ export async function initializeGallery() {
  */
 async function fetchGalleryWorks() {
   try {
-    const response = await fetch(`${url}/works`);
+    const response = await fetch(`${CONFIG.API_URL}/works`);
 
     if (!response.ok) {
       throw new Error(`HTTP error, status : ${response.status}`);
@@ -109,7 +111,7 @@ function insertInLocalStorage(entryName, entryData) {
  */
 async function fetchCategories() {
   try {
-    const response = await fetch(`${url}/categories`);
+    const response = await fetch(`${CONFIG.API_URL}/categories`);
 
     if (!response.ok) {
       throw new Error(`HTTP error, status : ${response.status}`);
@@ -276,6 +278,7 @@ function getFilteredWorks(filterId) {
 function setupAdminMode() {
   changeLoginLink();
   displayEditMode();
+  addOpenModalListener();
 }
 
 function changeLoginLink() {
@@ -295,4 +298,10 @@ function displayEditMode() {
 
   editModeDiv.classList.remove("hidden");
   modifyDiv.classList.remove("hidden");
+}
+
+//--------------STEP 3.1--------------
+function addOpenModalListener() {
+  const modifyDiv = document.querySelector(CONFIG.SELECTORS.MODIFY_DIV);
+  modifyDiv.addEventListener("click", () => modal.open());
 }
