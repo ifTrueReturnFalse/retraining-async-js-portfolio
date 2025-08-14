@@ -9,6 +9,7 @@ class Modal {
       closeSelector: "#modal .modal-close",
       preloadTemplates: [],
       defaultTemplate: null,
+      currentTemplate: null,
       apiUrl: CONFIG.API_URL,
     };
 
@@ -66,17 +67,22 @@ class Modal {
   setContent(templatePath) {
     this.contentElement.innerHTML = this.templates.get(templatePath);
     this.modalInitialize(templatePath);
+    this.currentTemplate = templatePath
   }
 
   handleClick(event) {
     event.preventDefault();
+    
     if (
       event.target === this.modalElement ||
       event.target === this.closeElement
     ) {
       this.close();
     }
-    console.log(event);
+
+    if (event.target.classList.contains("fa-trash-can")) {
+      this.deleteWork(event.target.dataset.id)
+    }
   }
 
   modalInitialize(templatePath) {
@@ -105,6 +111,10 @@ class Modal {
 
       modalGallery.appendChild(galleryElement);
     });
+  }
+
+  deleteWork(workId) {
+    console.log(workId)
   }
 }
 
