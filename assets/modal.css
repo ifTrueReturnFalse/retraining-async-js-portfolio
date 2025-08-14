@@ -11,7 +11,8 @@
 
 .modal-content {
   width: 630px;
-  height: 690px;
+  max-height: 690px;
+  min-height: 85vh;
 }
 
 .modal-close {
@@ -20,4 +21,47 @@
   right: 20px;
   font-size: 24px;
   cursor: pointer;
+}
+
+.modal-gallery-container {
+  height: 100%;
+  width: 420px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.modal-gallery-container h3 {
+  margin-top: 40px;
+  margin-bottom: 30px;
+  font-size: 26px;
+}
+
+.modal-gallery {
+  flex: 1;
+  overflow-x: scroll;
+}
+
+.modal-gallery-button-container {
+  width: 100%;
+  text-align: center;
+}
+
+.modal-gallery-container button {
+  margin-bottom: 20px;
+  width: 240px;
+  height: 35px;
+  border-radius: 60px;
+  border: none;
+  outline: none;
+  background-color: var(--dark-green-color);
+  color: white;
+  font-family: "Syne";
+  font-weight: 700;
 }
