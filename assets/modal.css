@@ -12,7 +12,7 @@
 .modal-content {
   width: 630px;
   max-height: 690px;
-  min-height: 85vh;
+  height: 85vh;
 }
 
 .modal-close {
@@ -38,23 +38,56 @@
 }
 
 .modal-gallery-container h3 {
-  margin-top: 40px;
-  margin-bottom: 30px;
+  margin-top: 50px;
+  margin-bottom: 50px;
   font-size: 26px;
 }
 
 .modal-gallery {
   flex: 1;
-  overflow-x: scroll;
+  overflow-y: auto;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 100px;
+  row-gap: 30px;
+  column-gap: 10px;
+}
+
+.gallery-element {
+  position: relative;
+}
+
+.gallery-element img {
+  object-fit: fill;
+  height: 100%;
+}
+
+i.fa-trash-can {
+  color: white;
+  background-color: black;
+  height: 17px;
+  width: 17px;
+  border-radius: 2px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-gallery-button-container {
   width: 100%;
   text-align: center;
+  padding-top: 40px;
+  margin-bottom: 40px;
+  border-top: 1px solid #b3b3b3;
 }
 
 .modal-gallery-container button {
-  margin-bottom: 20px;
   width: 240px;
   height: 35px;
   border-radius: 60px;

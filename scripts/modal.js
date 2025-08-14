@@ -65,6 +65,7 @@ class Modal {
 
   setContent(templatePath) {
     this.contentElement.innerHTML = this.templates.get(templatePath);
+    this.modalInitialize(templatePath);
   }
 
   handleClick(event) {
@@ -76,6 +77,34 @@ class Modal {
       this.close();
     }
     console.log(event);
+  }
+
+  modalInitialize(templatePath) {
+    if (templatePath === "modalGallery") {
+      this.modalGalleryInitialize();
+    }
+  }
+
+  modalGalleryInitialize() {
+    const works = JSON.parse(localStorage.getItem("works"));
+    const modalGallery = document.querySelector(CONFIG.SELECTORS.MODAL_GALLERY);
+    
+    works.forEach((work) => {
+      const galleryElement = document.createElement("div");
+      const workImage = document.createElement("img");
+      const trashcan = document.createElement("i");
+
+      galleryElement.classList.add("gallery-element");
+      workImage.src = work.imageUrl;
+      workImage.alt = work.title;
+      trashcan.classList.add("fa-solid", "fa-trash-can");
+      trashcan.dataset.id = work.id;
+
+      galleryElement.appendChild(workImage);
+      galleryElement.appendChild(trashcan);
+
+      modalGallery.appendChild(galleryElement);
+    });
   }
 }
 
