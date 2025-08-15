@@ -9,12 +9,14 @@ import { Modal } from "./modal.js";
 const modalSettings = {
   preloadTemplates: ["modalGallery"],
   defaultTemplate: "modalGallery",
-}
+};
 const modal = new Modal(modalSettings);
 
 /**
- * Function to initialize the gallery for dynamic display
- * Do nothing if it can't reach the API
+ * Initializes the gallery for dynamic display.
+ * Skips initialization if the API is unreachable.
+ *
+ * @returns {void}
  */
 export async function initializeGallery() {
   const isConnected = Auth.isConnected();
@@ -43,9 +45,20 @@ export async function initializeGallery() {
 //--------------STEP 1.1--------------
 
 /**
- * Fetch works from the API
- * Send empty array in case of failure
- * @returns {Array<Object>} List of works
+ * Fetches works from the API.
+ * Sends an empty array in case of failure.
+ *
+ * @returns {Array<{
+ *    id: number,
+ *    title: string,
+ *    imageUrl: string,
+ *    categoryId: number,
+ *    userId: number,
+ *    category: {
+ *      id: number,
+ *      name: string
+ *    }
+ * }>} Array of works.
  */
 async function fetchGalleryWorks() {
   try {
@@ -64,7 +77,9 @@ async function fetchGalleryWorks() {
 }
 
 /**
- * Clear the gallery content
+ * Clears the gallery content.
+ * 
+ * @returns {void}
  */
 export function clearGallery() {
   const gallery = document.querySelector(CONFIG.SELECTORS.GALLERY);
@@ -72,8 +87,20 @@ export function clearGallery() {
 }
 
 /**
- * Function to add works to the gallery
- * @param {Array<Object>} works
+ * Adds the works to the gallery element.
+ * 
+ * @param {Array<{
+ *    id: number,
+ *    title: string,
+ *    imageUrl: string,
+ *    categoryId: number,
+ *    userId: number,
+ *    category: {
+ *      id: number,
+ *      name: string
+ *    }
+ * }>} works Array of the works to display.
+ * @returns {void}
  */
 export function addWorksToGallery(works) {
   const gallery = document.querySelector(CONFIG.SELECTORS.GALLERY);
@@ -93,10 +120,11 @@ export function addWorksToGallery(works) {
 }
 
 /**
- * Function to set item in localStorage
- * Reset the value if it was previously stored
- * @param {String} entryName
- * @param {*} entryData
+ * Sets item in localStorage.
+ * Overwrites any existing value.
+ * 
+ * @param {string} entryName Entry key name.
+ * @param {*} entryData Entry data content.
  */
 export function insertInLocalStorage(entryName, entryData) {
   if (localStorage.getItem(entryName) != undefined) {
@@ -109,8 +137,9 @@ export function insertInLocalStorage(entryName, entryData) {
 //--------------STEP 1.2--------------
 
 /**
- * Function to fetch all works categories
- * @returns {Set} Set of categories
+ * Fetches every works categories.
+ * 
+ * @returns {Array<{id: number, name: string}>} The array of the categories.
  */
 async function fetchCategories() {
   try {
@@ -121,33 +150,35 @@ async function fetchCategories() {
     }
 
     const categories = await response.json();
-
+    console.log(categories)
     return categories || [];
   } catch (error) {
-    //If it's not possible to reach the API or an error occured during process
-    //Try to get categories with a fallback function
+    // If it's not possible to reach the API or an error occured during process
+    // Try to get categories with a fallback function
     return fallbackFetchCategories();
   }
 }
 
 /**
- * Fallback function to try to build the category array if existing data is present
- * @returns {Array<Object>} array of categories
+ * Tries to build the category array from existing data.
+ * 
+ * @returns {Array<{id: number, name: string}> | Array<null>} The array of categories or an empty array in case of failure.
+ * @throws {Error} If it is impossible to build the categories from existing data.
  */
 function fallbackFetchCategories() {
   try {
-    //In case categories were already stored
+    // If the categories are already stored.
     if (localStorage.getItem("categories") != undefined) {
       return JSON.parse(localStorage.getItem("categories"));
     }
 
-    //Build categories based on the works stored
+    // Builds categories based on the works stored
     if (localStorage.getItem("works") != undefined) {
       const works = JSON.parse(localStorage.getItem("works"));
       let categories = [];
       works.forEach((work) => {
-        //If there is not already an existing category with an existing id
-        //Then push it to categories
+        // If there is no existing category with an existing id
+        // Then push it to the categories array
         if (!categories.some((category) => category.id === work.category.id)) {
           categories.push(work.category);
         }
@@ -164,9 +195,10 @@ function fallbackFetchCategories() {
 }
 
 /**
- * Function to add the filters buttons to the webpage
- * based on the given categories
- * @param {Array<Object>} categories
+ * Adds the filters buttons to the gallery page.
+ * 
+ * @param {Array<{id: number, name: string}>} categories The categories array.
+ * @returns {void}
  */
 function addFiltersToGallery(categories) {
   const categoriesSet = categoriesToSet(categories);
@@ -174,7 +206,7 @@ function addFiltersToGallery(categories) {
 
   let i = 0;
   for (let category of categoriesSet) {
-    //Parse the category to make it usable for JS
+    // Parse the category to make it usable for JS
     const parsedCategory = JSON.parse(category);
 
     const button = document.createElement("button");
@@ -190,22 +222,25 @@ function addFiltersToGallery(categories) {
 }
 
 /**
- * Create a Set to avoid duplicate on categories
- * Add an extra entry to have the possibility to filter on all works
- * @param {Array<Object>} categories : List of categories
- * @returns {Set} Set with an extra "Tous" filter category and of every other categories
+ * Creates a Set to remove duplicates on the categories.
+ * Adds an extra entry to have the possibility to filter on all works.
+ * 
+ * @param {Array<{id: number, name: string}>} categories The categories array.
+ * @returns {Set<{id: number, name: string}>} The categories set with an extra "Tous" filter category.
  */
 function categoriesToSet(categories) {
   let categorySet = new Set();
-  //Add the "Tous" category
+  // Add the "Tous" category
   categorySet.add(JSON.stringify({ id: -1, name: "Tous" }));
-  //Stringified to make it unique compared to an object and avoid duplicate
+  // Stringified to make it unique compared to an object and avoid duplicate
   categories.forEach((category) => categorySet.add(JSON.stringify(category)));
   return categorySet;
 }
 
 /**
- * Function to add an event listener to each filter button
+ * Adds an event listener to each filter buttons.
+ * 
+ * @returns {void}
  */
 function addFilterButtonsListener() {
   const filterButtons = document.querySelectorAll(
@@ -220,8 +255,10 @@ function addFilterButtonsListener() {
 }
 
 /**
- * Function to call the necesary functions to filters works
- * @param {String} filterId : number in string format contained in the button dataset
+ * Handles filter event by updating the works and buttons display.
+ * 
+ * @param {string} filterId Unique category ID from the button dataset.
+ * @returns {void}
  */
 function handleFilter(filterId) {
   updateFilterButtons(filterId);
@@ -231,8 +268,10 @@ function handleFilter(filterId) {
 }
 
 /**
- * Function to update the class of the active filter
- * @param {String} filterId : Id included in the dataset of the button in string format
+ * Updates the class of the active filter button.
+ * 
+ * @param {string} filterId Unique category ID from the button dataset.
+ * @returns {void}
  */
 function updateFilterButtons(filterId) {
   const filterButtons = document.querySelectorAll(
@@ -240,14 +279,14 @@ function updateFilterButtons(filterId) {
   );
 
   filterButtons.forEach((button) => {
-    //Remove the active class if it's not the concerned button
+    // Removes the active class if it's not the concerned button
     if (
       button.classList.contains("active-filter") &&
       button.dataset.id != filterId
     ) {
       button.classList.remove("active-filter");
     }
-    //Add the active if the id matches
+    // Adds the active if the id matches
     if (
       !button.classList.contains("active-filter") &&
       button.dataset.id === filterId
@@ -258,9 +297,20 @@ function updateFilterButtons(filterId) {
 }
 
 /**
- * Return the array of filtered works based on the filter ID
- * @param {String} filterId : Id included in the dataset of the button in string format
- * @returns {Array<Object>} List of filtered works based on provided ID
+ * Returns the array of filtered works based on the filter ID.
+ * 
+ * @param {string} filterId Unique category ID from the button dataset.
+ * @returns {Array<{
+ *    id: number,
+ *    title: string,
+ *    imageUrl: string,
+ *    categoryId: number,
+ *    userId: number,
+ *    category: {
+ *      id: number,
+ *      name: string
+ *    }
+ * }>} The array of filtered works based on the category filter ID.
  */
 function getFilteredWorks(filterId) {
   const works = JSON.parse(localStorage.getItem("works"));
@@ -278,12 +328,22 @@ function getFilteredWorks(filterId) {
 
 //--------------STEP 2.2--------------
 
+/**
+ * Sets up the app for admin mode by changing text and classes.
+ * 
+ * @returns {void}
+ */
 function setupAdminMode() {
   changeLoginLink();
   displayEditMode();
   addOpenModalListener();
 }
 
+/**
+ * Changes login to logout inner text and add the disconnect functionnality.
+ * 
+ * @returns {void}
+ */
 function changeLoginLink() {
   const loginLink = document.querySelector(CONFIG.SELECTORS.LOGIN_LOGOUT_LINK);
 
@@ -295,6 +355,11 @@ function changeLoginLink() {
   });
 }
 
+/**
+ * Removes the class that hide the hints to alert the admin.
+ * 
+ * @returns {void}
+ */
 function displayEditMode() {
   const editModeDiv = document.querySelector(CONFIG.SELECTORS.EDIT_MODE_DIV);
   const modifyDiv = document.querySelector(CONFIG.SELECTORS.MODIFY_DIV);
@@ -304,6 +369,11 @@ function displayEditMode() {
 }
 
 //--------------STEP 3.1--------------
+/**
+ * Adds the event listener to open the modal window.
+ * 
+ * @returns {void}
+ */
 function addOpenModalListener() {
   const modifyDiv = document.querySelector(CONFIG.SELECTORS.MODIFY_DIV);
   modifyDiv.addEventListener("click", () => modal.open());
