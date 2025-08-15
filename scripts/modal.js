@@ -1,4 +1,5 @@
 import { CONFIG } from "./config.js";
+import { Auth } from "./auth.js";
 
 class Modal {
   constructor(config = {}) {
@@ -67,12 +68,12 @@ class Modal {
   setContent(templatePath) {
     this.contentElement.innerHTML = this.templates.get(templatePath);
     this.modalInitialize(templatePath);
-    this.currentTemplate = templatePath
+    this.currentTemplate = templatePath;
   }
 
   handleClick(event) {
     event.preventDefault();
-    
+
     if (
       event.target === this.modalElement ||
       event.target === this.closeElement
@@ -81,20 +82,26 @@ class Modal {
     }
 
     if (event.target.classList.contains("fa-trash-can")) {
-      this.deleteWork(event.target.dataset.id)
+      this.deleteWork(event.target.dataset.id);
     }
   }
 
   modalInitialize(templatePath) {
     if (templatePath === "modalGallery") {
-      this.modalGalleryInitialize();
+      this.modalGalleryClear();
+      this.modalGalleryDisplay();
     }
   }
 
-  modalGalleryInitialize() {
+  modalGalleryClear() {
+    const modalGallery = document.querySelector(CONFIG.SELECTORS.MODAL_GALLERY);
+    modalGallery.innerHTML = "";
+  }
+
+  modalGalleryDisplay() {
     const works = JSON.parse(localStorage.getItem("works"));
     const modalGallery = document.querySelector(CONFIG.SELECTORS.MODAL_GALLERY);
-    
+
     works.forEach((work) => {
       const galleryElement = document.createElement("div");
       const workImage = document.createElement("img");
@@ -113,8 +120,35 @@ class Modal {
     });
   }
 
-  deleteWork(workId) {
-    console.log(workId)
+  async deleteWork(workId) {
+    if (Auth.isConnected()) {
+      const token = Auth.getUser().token;
+      try {
+        const response = await fetch(`${this.config.apiUrl}/works/${workId}`, {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.ok) {
+          this.updateWorks(workId);
+        } else {
+          throw new Error(`Impossible de supprimer le projet : ${workId}.`);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+
+  updateWorks(deletedWork) {
+    const works = JSON.parse(localStorage.getItem("works"))
+    const notDeletedWorks = works.filter(work => {
+      return work.id !== parseInt(deletedWork)
+    })
+    localStorage.removeItem("works")
+    localStorage.setItem("works", JSON.stringify(notDeletedWorks))
+    this.modalGalleryClear()
+    this.modalGalleryDisplay()
   }
 }
 
