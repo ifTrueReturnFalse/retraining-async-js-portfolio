@@ -66,7 +66,7 @@ async function fetchGalleryWorks() {
 /**
  * Clear the gallery content
  */
-function clearGallery() {
+export function clearGallery() {
   const gallery = document.querySelector(CONFIG.SELECTORS.GALLERY);
   gallery.innerHTML = "";
 }
@@ -75,7 +75,7 @@ function clearGallery() {
  * Function to add works to the gallery
  * @param {Array<Object>} works
  */
-function addWorksToGallery(works) {
+export function addWorksToGallery(works) {
   const gallery = document.querySelector(CONFIG.SELECTORS.GALLERY);
   for (let work of works) {
     let figure = document.createElement("figure");
@@ -98,7 +98,7 @@ function addWorksToGallery(works) {
  * @param {String} entryName
  * @param {*} entryData
  */
-function insertInLocalStorage(entryName, entryData) {
+export function insertInLocalStorage(entryName, entryData) {
   if (localStorage.getItem(entryName) != undefined) {
     localStorage.removeItem(entryName);
   }

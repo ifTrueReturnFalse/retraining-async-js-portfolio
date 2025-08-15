@@ -1,5 +1,10 @@
 import { CONFIG } from "./config.js";
 import { Auth } from "./auth.js";
+import {
+  clearGallery,
+  addWorksToGallery,
+  insertInLocalStorage,
+} from "./gallery.js";
 
 class Modal {
   constructor(config = {}) {
@@ -141,14 +146,15 @@ class Modal {
   }
 
   updateWorks(deletedWork) {
-    const works = JSON.parse(localStorage.getItem("works"))
-    const notDeletedWorks = works.filter(work => {
-      return work.id !== parseInt(deletedWork)
-    })
-    localStorage.removeItem("works")
-    localStorage.setItem("works", JSON.stringify(notDeletedWorks))
-    this.modalGalleryClear()
-    this.modalGalleryDisplay()
+    const works = JSON.parse(localStorage.getItem("works"));
+    const notDeletedWorks = works.filter((work) => {
+      return work.id !== parseInt(deletedWork);
+    });
+    insertInLocalStorage("works", notDeletedWorks);
+    this.modalGalleryClear();
+    this.modalGalleryDisplay();
+    clearGallery();
+    addWorksToGallery(notDeletedWorks);
   }
 }
 
