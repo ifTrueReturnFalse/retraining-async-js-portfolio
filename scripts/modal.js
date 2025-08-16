@@ -44,6 +44,7 @@ class Modal {
 
     this.templates = new Map();
     this.isOpen = false;
+    this.currenTemplate = null;
 
     this.handleClick = this.handleClick.bind(this);
 
@@ -98,6 +99,7 @@ class Modal {
   close() {
     this.isOpen = false;
     this.modalElement.removeEventListener("click", this.handleClick);
+    this.removeUselessListeners();
 
     this.modalElement.close();
   }
@@ -109,7 +111,9 @@ class Modal {
    * @returns {void}
    */
   setContent(templatePath) {
+    this.removeUselessListeners();
     this.contentElement.innerHTML = this.templates.get(templatePath);
+    this.currenTemplate = templatePath;
     this.modalInitialize(templatePath);
   }
 
@@ -139,9 +143,9 @@ class Modal {
       this.setContent("modalGallery");
     }
 
-    if (event.target.classList.contains("modal-submit")) {
-      event.preventDefault()
-    }
+    // if (event.target.classList.contains("modal-submit")) {
+    //   event.preventDefault()
+    // }
   }
 
   /**
@@ -158,6 +162,7 @@ class Modal {
 
     if (templatePath === "modalAddWork") {
       this.modalInjectCategories();
+      this.modalAddWorkListener();
     }
   }
 
@@ -269,6 +274,64 @@ class Modal {
       option.text = category.name;
       selectElement.appendChild(option);
     });
+  }
+
+  removeUselessListeners() {
+    if (this.currenTemplate === "modalAddWork") {
+      const form = document.querySelector(CONFIG.SELECTORS.MODAL_WORK_FORM);
+      form.removeEventListener("submit", (event) => {
+        this.handleWorkFormSubmit(event);
+      });
+    }
+  }
+
+  modalAddWorkListener() {
+    const form = document.querySelector(CONFIG.SELECTORS.MODAL_WORK_FORM);
+    const workImageInput = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
+
+    form.addEventListener("submit", (event) => {
+      this.handleWorkFormSubmit(event);
+    });
+    workImageInput.addEventListener("input", () => {
+      this.handleWorkImageInput();
+    });
+  }
+
+  handleWorkFormSubmit(event) {
+    event.preventDefault();
+    console.log("Submit !");
+  }
+
+  handleWorkImageInput() {
+    const workImageInput = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
+    const imagePreview = document.querySelector(
+      CONFIG.SELECTORS.CUSTOM_FILE_INPUT_PREVIEW
+    );
+    const defaultLabel = document.querySelector(
+      CONFIG.SELECTORS.CUSTOM_FILE_INPUT_DEFAULT
+    );
+    
+    this.handleFileInput()
+
+    if (workImageInput.value !== "" && !defaultLabel.classList.contains("hidden")) {
+      defaultLabel.classList.add("hidden")
+    } else if (workImageInput.value === "" && defaultLabel.classList.contains("hidden")) {
+      defaultLabel.classList.remove("hidden")
+    }
+  }
+
+  handleFileInput () {
+    const workImageInput = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
+    const imagePreview = document.querySelector(
+      CONFIG.SELECTORS.CUSTOM_FILE_INPUT_PREVIEW
+    );
+    
+    imagePreview.file = workImageInput.files[0]
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      imagePreview.src = event.target.result;
+    }
+    reader.readAsDataURL(workImageInput.files[0])
   }
 }
 

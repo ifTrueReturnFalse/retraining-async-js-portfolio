@@ -137,16 +137,29 @@ input[type="file"] {
 }
 
 .custom-file-input {
-  flex: 1;
-  background-color: #e8f1f6;
-  border-radius: 3px;
   margin-bottom: 30px;
+  flex: 1;
+  max-height: 170px;
+  background-color: #e8f1f6;
+}
+
+.custom-file-input-default {
+  border-radius: 3px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 10px;
+  height: 100%;
+}
+
+.custom-file-input-preview {
+  object-fit: fill;
+  height: 100%;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .custom-file-input i {
@@ -177,4 +190,8 @@ input[type="file"] {
   width: 240px;
   font-size: 14px;
   margin: 0;
+}
+
+.hidden {
+  display: none;
 }

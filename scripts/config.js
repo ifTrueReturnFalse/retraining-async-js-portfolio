@@ -16,5 +16,9 @@ export const CONFIG = {
     MODIFY_DIV: ".modify-div",
     MODAL_GALLERY: ".modal-gallery",
     WORK_ADD_SELECT: "workCategory",
+    MODAL_WORK_FORM: ".modal-work-form",
+    WORK_PHOTO: "work-photo",
+    CUSTOM_FILE_INPUT_DEFAULT: ".custom-file-input-default",
+    CUSTOM_FILE_INPUT_PREVIEW: ".custom-file-input-preview",
   },
 };
