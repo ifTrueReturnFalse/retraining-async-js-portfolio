@@ -15,5 +15,6 @@ export const CONFIG = {
     EDIT_MODE_DIV: ".edit-mode-div",
     MODIFY_DIV: ".modify-div",
     MODAL_GALLERY: ".modal-gallery",
+    WORK_ADD_SELECT: "workCategory",
   },
 };

@@ -7,7 +7,7 @@ import { Auth } from "./auth.js";
 import { Modal } from "./modal.js";
 
 const modalSettings = {
-  preloadTemplates: ["modalGallery"],
+  preloadTemplates: ["modalGallery", "modalAddWork"],
   defaultTemplate: "modalGallery",
 };
 const modal = new Modal(modalSettings);

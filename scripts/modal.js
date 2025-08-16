@@ -45,7 +45,6 @@ class Modal {
     this.templates = new Map();
     this.isOpen = false;
 
-    this.currentTemplate = null;
     this.handleClick = this.handleClick.bind(this);
 
     this.preloadTemplates();
@@ -112,7 +111,6 @@ class Modal {
   setContent(templatePath) {
     this.contentElement.innerHTML = this.templates.get(templatePath);
     this.modalInitialize(templatePath);
-    this.currentTemplate = templatePath;
   }
 
   /**
@@ -122,8 +120,6 @@ class Modal {
    * @returns {void}
    */
   handleClick(event) {
-    event.preventDefault();
-
     if (
       event.target === this.modalElement ||
       event.target === this.closeElement
@@ -133,6 +129,18 @@ class Modal {
 
     if (event.target.classList.contains("fa-trash-can")) {
       this.deleteWork(event.target.dataset.id);
+    }
+
+    if (event.target.id === "modal-button-goto-work-form") {
+      this.setContent("modalAddWork");
+    }
+
+    if (event.target.classList.contains("fa-arrow-left")) {
+      this.setContent("modalGallery");
+    }
+
+    if (event.target.classList.contains("modal-submit")) {
+      event.preventDefault()
     }
   }
 
@@ -146,6 +154,10 @@ class Modal {
     if (templatePath === "modalGallery") {
       this.modalGalleryClear();
       this.modalGalleryDisplay();
+    }
+
+    if (templatePath === "modalAddWork") {
+      this.modalInjectCategories();
     }
   }
 
@@ -238,6 +250,25 @@ class Modal {
     this.modalGalleryDisplay();
     clearGallery();
     addWorksToGallery(notDeletedWorks);
+  }
+
+  /**
+   * Injects categories options in the select element.
+   *
+   * @returns {void}
+   */
+  modalInjectCategories() {
+    const categories = JSON.parse(localStorage.getItem("categories"));
+    const selectElement = document.getElementById(
+      CONFIG.SELECTORS.WORK_ADD_SELECT
+    );
+
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.text = category.name;
+      selectElement.appendChild(option);
+    });
   }
 }
 

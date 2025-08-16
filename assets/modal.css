@@ -23,7 +23,7 @@
   cursor: pointer;
 }
 
-.modal-gallery-container {
+.template-container {
   height: 100%;
   width: 420px;
   margin: auto;
@@ -37,7 +37,7 @@
   right: 0;
 }
 
-.modal-gallery-container h3 {
+h3 {
   margin-top: 50px;
   margin-bottom: 50px;
   font-size: 26px;
@@ -79,7 +79,7 @@ i.fa-trash-can {
   justify-content: center;
 }
 
-.modal-gallery-button-container {
+.modal-button-container {
   width: 100%;
   text-align: center;
   padding-top: 40px;
@@ -87,7 +87,7 @@ i.fa-trash-can {
   border-top: 1px solid #b3b3b3;
 }
 
-.modal-gallery-container button {
+.modal-button {
   width: 240px;
   height: 35px;
   border-radius: 60px;
@@ -97,4 +97,84 @@ i.fa-trash-can {
   color: white;
   font-family: "Syne";
   font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-button:hover {
+  background-color: var(--darker-green-color);
+}
+
+i.fa-arrow-left {
+  position: absolute;
+  left: -95px;
+  top: 20px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.modal-work-form {
+  display: flex;
+  flex-direction: column;
+  width: 420px;
+  height: 100%;
+  margin: auto;
+}
+
+.modal-work-form input,
+.modal-work-form select {
+  border: none;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  height: 50px;
+  outline: none;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  padding: 0 10px;
+  font-size: 16px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.custom-file-input {
+  flex: 1;
+  background-color: #e8f1f6;
+  border-radius: 3px;
+  margin-bottom: 30px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.custom-file-input i {
+  font-size: 60px;
+  color: #b9c5cc;
+}
+
+.custom-file-input span {
+  background-color: #cbd6dc;
+  color: #306685;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Work Sans";
+  border: none;
+  border-radius: 50px;
+  padding: 10px 30px;
+  cursor: pointer;
+}
+
+.custom-file-input p {
+  color: #444444;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.modal-button-container .modal-submit {
+  height: 35px;
+  width: 240px;
+  font-size: 14px;
+  margin: 0;
 }

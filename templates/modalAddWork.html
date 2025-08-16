@@ -1,0 +1,24 @@
+<div class="template-container">
+  <i class="fa-solid fa-arrow-left"></i>
+  <h3>Ajout photo</h3>
+  <form class="modal-work-form">
+    <label for="workPhoto" class="custom-file-input">
+      <i class="fa-regular fa-image"></i>
+      <span>+ Ajouter photo</span>
+      <p>jpg, png : 4mo max</p>
+    </label>
+    <input
+      type="file"
+      name="workPhoto"
+      id="workPhoto"
+      accept="image/png, image/jpeg, image.jpg"
+    />
+    <label for="workTitle">Titre</label>
+    <input type="text" name="workTitle" id="workTitle" />
+    <label for="workCategory">Catégorie</label>
+    <select name="workCategory" id="workCategory"></select>
+    <div class="modal-button-container">
+      <input class="modal-button modal-submit" type="submit" value="Valider">
+    </div>
+  </form>
+</div>
