@@ -276,15 +276,32 @@ class Modal {
     });
   }
 
+  /**
+   * Removes listeners based on a template.
+   *
+   * @returns {void}
+   */
   removeUselessListeners() {
     if (this.currenTemplate === "modalAddWork") {
       const form = document.querySelector(CONFIG.SELECTORS.MODAL_WORK_FORM);
+      const workImageInput = document.getElementById(
+        CONFIG.SELECTORS.WORK_PHOTO
+      );
+
       form.removeEventListener("submit", (event) => {
         this.handleWorkFormSubmit(event);
+      });
+      workImageInput.removeEventListener("input", () => {
+        this.handleWorkImageInput();
       });
     }
   }
 
+  /**
+   * Adds listeners on the add work template.
+   *
+   * @returns {void}
+   */
   modalAddWorkListener() {
     const form = document.querySelector(CONFIG.SELECTORS.MODAL_WORK_FORM);
     const workImageInput = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
@@ -297,41 +314,61 @@ class Modal {
     });
   }
 
+  /**
+   * Handles actions to do on submit.
+   * 
+   * @todo Change JSDdoc when function is functionnal.
+   * @param {event} event The submit event.
+   * @returns {void}
+   */
   handleWorkFormSubmit(event) {
     event.preventDefault();
     console.log("Submit !");
   }
 
+  /**
+   * Handles input change when the user input an image file.
+   * 
+   * @returns {void}
+   */
   handleWorkImageInput() {
     const workImageInput = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
-    const imagePreview = document.querySelector(
-      CONFIG.SELECTORS.CUSTOM_FILE_INPUT_PREVIEW
-    );
     const defaultLabel = document.querySelector(
       CONFIG.SELECTORS.CUSTOM_FILE_INPUT_DEFAULT
     );
-    
-    this.handleFileInput()
 
-    if (workImageInput.value !== "" && !defaultLabel.classList.contains("hidden")) {
-      defaultLabel.classList.add("hidden")
-    } else if (workImageInput.value === "" && defaultLabel.classList.contains("hidden")) {
-      defaultLabel.classList.remove("hidden")
+    this.handleFileInput();
+
+    if (
+      workImageInput.value !== "" &&
+      !defaultLabel.classList.contains("hidden")
+    ) {
+      defaultLabel.classList.add("hidden");
+    } else if (
+      workImageInput.value === "" &&
+      defaultLabel.classList.contains("hidden")
+    ) {
+      defaultLabel.classList.remove("hidden");
     }
   }
 
-  handleFileInput () {
+  /**
+   * Handles the file input to preview on the modal.
+   * 
+   * @returns {void}
+   */
+  handleFileInput() {
     const workImageInput = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
     const imagePreview = document.querySelector(
       CONFIG.SELECTORS.CUSTOM_FILE_INPUT_PREVIEW
     );
-    
-    imagePreview.file = workImageInput.files[0]
-    const reader = new FileReader()
+
+    imagePreview.file = workImageInput.files[0];
+    const reader = new FileReader();
     reader.onload = (event) => {
       imagePreview.src = event.target.result;
-    }
-    reader.readAsDataURL(workImageInput.files[0])
+    };
+    reader.readAsDataURL(workImageInput.files[0]);
   }
 }
 
