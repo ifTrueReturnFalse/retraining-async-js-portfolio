@@ -195,3 +195,13 @@ input[type="file"] {
 .hidden {
   display: none;
 }
+
+.modal-error {
+  text-align: center;
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #b1663c;
+  border-radius: 20px;
+  color: white;
+  font-size: 16px;
+}

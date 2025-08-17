@@ -142,10 +142,6 @@ class Modal {
     if (event.target.classList.contains("fa-arrow-left")) {
       this.setContent("modalGallery");
     }
-
-    // if (event.target.classList.contains("modal-submit")) {
-    //   event.preventDefault()
-    // }
   }
 
   /**
@@ -219,7 +215,7 @@ class Modal {
         });
 
         if (response.ok) {
-          this.updateWorks(workId);
+          this.updateAfterDelete(workId);
         } else {
           throw new Error(`Impossible de supprimer le projet : ${workId}.`);
         }
@@ -245,7 +241,7 @@ class Modal {
    * }>} deletedWork Array of works.
    *@returns {void}
    */
-  updateWorks(deletedWork) {
+  updateAfterDelete(deletedWork) {
     const works = JSON.parse(localStorage.getItem("works"));
     const notDeletedWorks = works.filter((work) => {
       return work.id !== parseInt(deletedWork);
@@ -291,7 +287,7 @@ class Modal {
       form.removeEventListener("submit", (event) => {
         this.handleWorkFormSubmit(event);
       });
-      workImageInput.removeEventListener("input", () => {
+      workImageInput.removeEventListener("change", () => {
         this.handleWorkImageInput();
       });
     }
@@ -309,26 +305,157 @@ class Modal {
     form.addEventListener("submit", (event) => {
       this.handleWorkFormSubmit(event);
     });
-    workImageInput.addEventListener("input", () => {
+    workImageInput.addEventListener("change", () => {
       this.handleWorkImageInput();
     });
   }
 
   /**
-   * Handles actions to do on submit.
-   * 
+   * Handles actions to do on the work form submission.
+   *
    * @todo Change JSDdoc when function is functionnal.
    * @param {event} event The submit event.
    * @returns {void}
    */
   handleWorkFormSubmit(event) {
     event.preventDefault();
-    console.log("Submit !");
+    if (this.verifyForm()) {
+      this.removeError();
+      this.handlePostWork();
+    } else {
+      this.displayError("Les champs ne sont pas tous remplis.");
+    }
+  }
+
+  /**
+   * Verifies the photo file input and the title text input.
+   *
+   * @returns {boolean} `true` when the file input and the text input are OK, `false` otherwise.
+   */
+  verifyForm() {
+    const photoInput = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
+    const titleInput = document.getElementById(CONFIG.SELECTORS.WORK_TITLE);
+
+    return photoInput.value !== "" && titleInput.value.length > 2;
+  }
+
+  /**
+   * Displays an error message to the user.
+   *
+   * @param {string} message The error message to display.
+   */
+  displayError(message) {
+    let modalError = document.querySelector(CONFIG.SELECTORS.MODAL_ERROR);
+    if (modalError === null) {
+      modalError = this.createErrorElement();
+    }
+
+    modalError.innerText = message;
+  }
+
+  /**
+   * Creates an error element to display errors in.
+   *
+   * @returns {HTMLDivElement} The error div.
+   */
+  createErrorElement() {
+    const workForm = document.querySelector(CONFIG.SELECTORS.MODAL_WORK_FORM);
+
+    const errorElement = document.createElement("div");
+    errorElement.classList.add("modal-error");
+    workForm.appendChild(errorElement);
+
+    return errorElement;
+  }
+
+  /**
+   * Removes the error div if it is present.
+   *
+   * @returns {void}
+   */
+  removeError() {
+    let modalError = document.querySelector(CONFIG.SELECTORS.MODAL_ERROR);
+    if (modalError !== null) {
+      modalError.remove();
+    }
+  }
+
+  /**
+   * Handles the insertion of the new work by creating a FormData and fetching to the API.
+   * 
+   * @returns {void}
+   */
+  async handlePostWork() {
+    const workImage = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
+    const workTitle = document.getElementById(CONFIG.SELECTORS.WORK_TITLE);
+    const workCategory = document.getElementById(
+      CONFIG.SELECTORS.WORK_CATEGORY
+    );
+
+    const formData = new FormData();
+    formData.append("image", workImage.files[0]);
+    formData.append("title", workTitle.value);
+    formData.append("category", workCategory.value);
+
+    const token = Auth.getUser().token;
+
+    try {
+      const response = await fetch(`${this.config.apiUrl}/works`, {
+        body: formData,
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'ajout du projet.");
+      }
+
+      const data = await response.json()
+      this.updateAfterAdd(data)
+    } catch (error) {
+      this.displayError(error)
+    }
+  }
+
+  /**
+   * Updates the local storage, the display.
+   * 
+   * @param {
+   *  id: number,
+ *    title: string,
+ *    imageUrl: string,
+ *    categoryId: number,
+ *    userId: number,
+ *    } workData The work data from the API.
+   */
+  updateAfterAdd(workData) {
+    let works = JSON.parse(localStorage.getItem("works"))
+    works.push(workData)
+    insertInLocalStorage("works", works)
+    clearGallery()
+    addWorksToGallery(works)
+
+    this.resetForm()
+  }
+
+  /**
+   * Resets the work form.
+   * 
+   * @returns {void}
+   */
+  resetForm() {
+    const workImage = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
+    const workTitle = document.getElementById(CONFIG.SELECTORS.WORK_TITLE);
+
+    workImage.value = ""
+    workTitle.value = ""
+
+    this.handleWorkImageInput()
   }
 
   /**
    * Handles input change when the user input an image file.
-   * 
+   *
    * @returns {void}
    */
   handleWorkImageInput() {
@@ -354,7 +481,7 @@ class Modal {
 
   /**
    * Handles the file input to preview on the modal.
-   * 
+   *
    * @returns {void}
    */
   handleFileInput() {
@@ -363,12 +490,16 @@ class Modal {
       CONFIG.SELECTORS.CUSTOM_FILE_INPUT_PREVIEW
     );
 
-    imagePreview.file = workImageInput.files[0];
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      imagePreview.src = event.target.result;
-    };
-    reader.readAsDataURL(workImageInput.files[0]);
+    if (workImageInput.files[0]) {
+      imagePreview.file = workImageInput.files[0];
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        imagePreview.src = event.target.result;
+      };
+      reader.readAsDataURL(workImageInput.files[0]);
+    } else {
+      imagePreview.src = "";
+    }
   }
 }
 

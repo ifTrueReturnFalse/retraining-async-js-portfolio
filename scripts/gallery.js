@@ -150,7 +150,7 @@ async function fetchCategories() {
     }
 
     const categories = await response.json();
-    console.log(categories)
+    
     return categories || [];
   } catch (error) {
     // If it's not possible to reach the API or an error occured during process
