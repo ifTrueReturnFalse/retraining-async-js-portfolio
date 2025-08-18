@@ -370,7 +370,7 @@ class Modal {
   /**
    * Creates a message element to display the messages in.
    *
-   * @param {string} className The class to add to the div element. 
+   * @param {string} className The class to add to the div element.
    * @returns {HTMLDivElement} The message div.
    */
   createMessageElement(className) {
