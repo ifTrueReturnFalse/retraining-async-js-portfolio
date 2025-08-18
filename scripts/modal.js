@@ -324,7 +324,10 @@ class Modal {
       this.hideMessage();
       this.handlePostWork();
     } else {
-      this.displayMessage("Les champs ne sont pas tous remplis.", "modal-error");
+      this.displayMessage(
+        "Les champs ne sont pas tous remplis.",
+        "modal-error"
+      );
     }
   }
 
@@ -341,31 +344,33 @@ class Modal {
   }
 
   /**
-   * Displays an error message to the user.
+   * Displays a message to the user.
    *
-   * @param {string} message The error message to display.
+   * @param {string} message The message to display.
+   * @param {string} className The class to add to the div element.
    */
   displayMessage(message, className) {
     let modalMessage = document.querySelector(CONFIG.SELECTORS.MODAL_MESSAGE);
-    
-    this.hideMessage()
+
+    this.hideMessage();
 
     if (modalMessage === null) {
       modalMessage = this.createMessageElement(className);
     } else {
-      modalMessage.classList.add(className)
-      modalMessage.classList.remove("hidden")
+      modalMessage.classList.add(className);
+      modalMessage.classList.remove("hidden");
     }
-    
+
     modalMessage.innerText = message;
     this.messageTimeout = setTimeout(() => {
-      this.hideMessage()
+      this.hideMessage();
     }, 5000);
   }
 
   /**
    * Creates a message element to display the messages in.
    *
+   * @param {string} className The class to add to the div element. 
    * @returns {HTMLDivElement} The message div.
    */
   createMessageElement(className) {
@@ -379,35 +384,35 @@ class Modal {
   }
 
   /**
-   * Removes the error div if it is present.
+   * Hides the message div if it is present.
    *
    * @returns {void}
    */
   hideMessage() {
     let modalMessage = document.querySelector(CONFIG.SELECTORS.MODAL_MESSAGE);
-    
+
     if (this.messageTimeout !== null) {
-      clearTimeout(this.messageTimeout)
+      clearTimeout(this.messageTimeout);
     }
-    
+
     if (modalMessage !== null) {
       if (!modalMessage.classList.contains("hidden")) {
-        modalMessage.classList.add("hidden")
+        modalMessage.classList.add("hidden");
       }
 
       if (modalMessage.classList.contains("modal-error")) {
-        modalMessage.classList.remove("modal-error")
+        modalMessage.classList.remove("modal-error");
       }
 
       if (modalMessage.classList.contains("modal-success")) {
-        modalMessage.classList.remove("modal-success")
+        modalMessage.classList.remove("modal-success");
       }
     }
   }
 
   /**
    * Handles the insertion of the new work by creating a FormData and fetching to the API.
-   * 
+   *
    * @returns {void}
    */
   async handlePostWork() {
@@ -435,48 +440,48 @@ class Modal {
         throw new Error("Erreur lors de l'ajout du projet.");
       }
 
-      const data = await response.json()
-      this.updateAfterAdd(data)
+      const data = await response.json();
+      this.updateAfterAdd(data);
     } catch (error) {
-      this.displayMessage(error, "modal-error")
+      this.displayMessage(error, "modal-error");
     }
   }
 
   /**
    * Updates the local storage, the display.
-   * 
+   *
    * @param {
    *  id: number,
- *    title: string,
- *    imageUrl: string,
- *    categoryId: number,
- *    userId: number,
- *    } workData The work data from the API.
+   *    title: string,
+   *    imageUrl: string,
+   *    categoryId: number,
+   *    userId: number,
+   *    } workData The work data from the API.
    */
   updateAfterAdd(workData) {
-    let works = JSON.parse(localStorage.getItem("works"))
-    works.push(workData)
-    insertInLocalStorage("works", works)
-    clearGallery()
-    addWorksToGallery(works)
+    let works = JSON.parse(localStorage.getItem("works"));
+    works.push(workData);
+    insertInLocalStorage("works", works);
+    clearGallery();
+    addWorksToGallery(works);
 
-    this.resetForm()
-    this.displayMessage("Projet ajouté avec succès.", "modal-success")
+    this.resetForm();
+    this.displayMessage("Projet ajouté avec succès.", "modal-success");
   }
 
   /**
    * Resets the work form.
-   * 
+   *
    * @returns {void}
    */
   resetForm() {
     const workImage = document.getElementById(CONFIG.SELECTORS.WORK_PHOTO);
     const workTitle = document.getElementById(CONFIG.SELECTORS.WORK_TITLE);
 
-    workImage.value = ""
-    workTitle.value = ""
+    workImage.value = "";
+    workTitle.value = "";
 
-    this.handleWorkImageInput()
+    this.handleWorkImageInput();
   }
 
   /**
