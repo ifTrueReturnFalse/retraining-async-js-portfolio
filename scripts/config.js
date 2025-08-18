@@ -22,7 +22,7 @@ export const CONFIG = {
     WORK_CATEGORY: "work-category",
     CUSTOM_FILE_INPUT_DEFAULT: ".custom-file-input-default",
     CUSTOM_FILE_INPUT_PREVIEW: ".custom-file-input-preview",
-    MODAL_ERROR: ".modal-error",
+    MODAL_MESSAGE: ".modal-message",
   },
   FALLBACK_WORKS: [
     {

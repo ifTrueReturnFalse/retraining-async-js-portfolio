@@ -45,6 +45,7 @@ class Modal {
     this.templates = new Map();
     this.isOpen = false;
     this.currenTemplate = null;
+    this.messageTimeout = null;
 
     this.handleClick = this.handleClick.bind(this);
 
@@ -320,10 +321,10 @@ class Modal {
   handleWorkFormSubmit(event) {
     event.preventDefault();
     if (this.verifyForm()) {
-      this.removeError();
+      this.hideMessage();
       this.handlePostWork();
     } else {
-      this.displayError("Les champs ne sont pas tous remplis.");
+      this.displayMessage("Les champs ne sont pas tous remplis.", "modal-error");
     }
   }
 
@@ -344,28 +345,37 @@ class Modal {
    *
    * @param {string} message The error message to display.
    */
-  displayError(message) {
-    let modalError = document.querySelector(CONFIG.SELECTORS.MODAL_ERROR);
-    if (modalError === null) {
-      modalError = this.createErrorElement();
-    }
+  displayMessage(message, className) {
+    let modalMessage = document.querySelector(CONFIG.SELECTORS.MODAL_MESSAGE);
+    
+    this.hideMessage()
 
-    modalError.innerText = message;
+    if (modalMessage === null) {
+      modalMessage = this.createMessageElement(className);
+    } else {
+      modalMessage.classList.add(className)
+      modalMessage.classList.remove("hidden")
+    }
+    
+    modalMessage.innerText = message;
+    this.messageTimeout = setTimeout(() => {
+      this.hideMessage()
+    }, 5000);
   }
 
   /**
-   * Creates an error element to display errors in.
+   * Creates a message element to display the messages in.
    *
-   * @returns {HTMLDivElement} The error div.
+   * @returns {HTMLDivElement} The message div.
    */
-  createErrorElement() {
+  createMessageElement(className) {
     const workForm = document.querySelector(CONFIG.SELECTORS.MODAL_WORK_FORM);
 
-    const errorElement = document.createElement("div");
-    errorElement.classList.add("modal-error");
-    workForm.appendChild(errorElement);
+    const messageElement = document.createElement("div");
+    messageElement.classList.add(className, "modal-message");
+    workForm.appendChild(messageElement);
 
-    return errorElement;
+    return messageElement;
   }
 
   /**
@@ -373,10 +383,25 @@ class Modal {
    *
    * @returns {void}
    */
-  removeError() {
-    let modalError = document.querySelector(CONFIG.SELECTORS.MODAL_ERROR);
-    if (modalError !== null) {
-      modalError.remove();
+  hideMessage() {
+    let modalMessage = document.querySelector(CONFIG.SELECTORS.MODAL_MESSAGE);
+    
+    if (this.messageTimeout !== null) {
+      clearTimeout(this.messageTimeout)
+    }
+    
+    if (modalMessage !== null) {
+      if (!modalMessage.classList.contains("hidden")) {
+        modalMessage.classList.add("hidden")
+      }
+
+      if (modalMessage.classList.contains("modal-error")) {
+        modalMessage.classList.remove("modal-error")
+      }
+
+      if (modalMessage.classList.contains("modal-success")) {
+        modalMessage.classList.remove("modal-success")
+      }
     }
   }
 
@@ -413,7 +438,7 @@ class Modal {
       const data = await response.json()
       this.updateAfterAdd(data)
     } catch (error) {
-      this.displayError(error)
+      this.displayMessage(error, "modal-error")
     }
   }
 
@@ -436,6 +461,7 @@ class Modal {
     addWorksToGallery(works)
 
     this.resetForm()
+    this.displayMessage("Projet ajouté avec succès.", "modal-success")
   }
 
   /**
