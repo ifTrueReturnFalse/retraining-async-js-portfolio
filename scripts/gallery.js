@@ -71,9 +71,26 @@ async function fetchGalleryWorks() {
     const works = await response.json();
     return works || [];
   } catch (error) {
-    console.error("Something went wrong : ", error);
-    return [];
+    return fallbackGetWorks();
   }
+}
+
+/**
+ * Gets the fallback array of works to display.
+ * 
+ * @returns {Array<{
+ *    id: number,
+ *    title: string,
+ *    imageUrl: string,
+ *    categoryId: number,
+ *    category: {
+ *      id: number,
+ *      name: string
+ *    }
+ * }>} Array of works.
+ */
+function fallbackGetWorks() {
+  return CONFIG.FALLBACK_WORKS;
 }
 
 /**
