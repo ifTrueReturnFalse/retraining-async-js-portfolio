@@ -1,7 +1,7 @@
 # Projet 2.2 OC Sophie Bluel - Architecte d'intérieur / Project 2.2 OC Sophie Bluel - Interior Designer
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+[![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)](#)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 ![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
 ![License: MIT](https://img.shields.io/badge/License-MIT-blue)
